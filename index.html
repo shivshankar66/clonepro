@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple E‑commerce (No CSS)</title>
+</head>
+<body>
+  <header>
+    <h1>🛒 My Simple Store</h1>
+    <p>Pure HTML + JavaScript. No CSS used.</p>
+    <hr>
+  </header>
+
+  <main>
+    <section aria-labelledby="products-title">
+      <h2 id="products-title">Products</h2>
+      <div id="products"></div>
+    </section>
+
+    <hr>
+
+    <section aria-labelledby="cart-title">
+      <h2 id="cart-title">Cart</h2>
+      <div id="cart-empty">Your cart is empty.</div>
+      <table id="cart-table" border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; display:none;">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cart-body"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" align="right"><strong>Total:</strong></td>
+            <td id="cart-total"><strong>₹0</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div id="cart-actions" style="margin-top:10px; display:none;">
+        <button id="clear-cart">Clear Cart</button>
+        <button id="checkout">Checkout</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <hr>
+    <small>Demo app for learning Git/GitHub. No CSS included.</small>
+  </footer>
+
+  <script>
+    // --- Demo product data (could be fetched from an API in real apps)
+    const products = [
+      { id: 1, name: 'Wireless Mouse', price: 499 },
+      { id: 2, name: 'Mechanical Keyboard', price: 2999 },
+      { id: 3, name: 'USB-C Cable', price: 199 },
+      { id: 4, name: 'Laptop Stand', price: 1299 }
+    ];
+
+    // --- State
+    const cart = {}; // { productId: quantity }
+
+    // --- Helpers
+    const rupee = (n) => '₹' + Number(n).toFixed(2);
+
+    function renderProducts() {
+      const wrap = document.getElementById('products');
+      wrap.innerHTML = '';
+      products.forEach(p => {
+        const item = document.createElement('div');
+        item.setAttribute('data-id', p.id);
+        item.innerHTML = `
+          <h3>${p.name}</h3>
+          <p>Price: ${rupee(p.price)}</p>
+          <button aria-label="Add ${p.name} to cart">Add to Cart</button>
+          <hr>
+        `;
+        item.querySelector('button').addEventListener('click', () => addToCart(p.id));
+        wrap.appendChild(item);
+      });
+    }
+
+    function addToCart(id) {
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
+    }
+
+    function removeOne(id) {
+      if (!cart[id]) return;
+      cart[id] -= 1;
+      if (cart[id] <= 0) delete cart[id];
+      renderCart();
+    }
+
+    function deleteItem(id) {
+      delete cart[id];
+      renderCart();
+    }
+
+    function clearCart() {
+      for (const k in cart) delete cart[k];
+      renderCart();
+    }
+
+    function renderCart() {
+      const body = document.getElementById('cart-body');
+      const table = document.getElementById('cart-table');
+      const empty = document.getElementById('cart-empty');
+      const actions = document.getElementById('cart-actions');
+      body.innerHTML = '';
+
+      const ids = Object.keys(cart);
+      if (ids.length === 0) {
+        table.style.display = 'none';
+        actions.style.display = 'none';
+        empty.style.display = 'block';
+        document.getElementById('cart-total').textContent = '₹0.00';
+        return;
+      }
+
+      table.style.display = '';
+      actions.style.display = '';
+      empty.style.display = 'none';
+
+      let total = 0;
+      ids.forEach(id => {
+        const p = products.find(x => x.id === Number(id));
+        const qty = cart[id];
+        const subtotal = p.price * qty;
+        total += subtotal;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${rupee(p.price)}</td>
+          <td>${qty}</td>
+          <td>${rupee(subtotal)}</td>
+          <td>
+            <button data-action="add">+</button>
+            <button data-action="remove">-</button>
+            <button data-action="delete">Delete</button>
+          </td>
+        `;
+        tr.querySelector('[data-action="add"]').addEventListener('click', () => addToCart(p.id));
+        tr.querySelector('[data-action="remove"]').addEventListener('click', () => removeOne(p.id));
+        tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteItem(p.id));
+        body.appendChild(tr);
+      });
+
+      document.getElementById('cart-total').textContent = rupee(total);
+    }
+
+    function checkout() {
+      const ids = Object.keys(cart);
+      if (ids.length === 0) {
+        alert('Your cart is empty.');
+        return;
+      }
+      let summary = 'Order Summary:\n\n';
+      let total = 0;
+      ids.forEach(id => {
+        const p = products.find(x => x.id === Number(id));
+        const qty = cart[id];
+        const subtotal = p.price * qty;
+        total += subtotal;
+        summary += `- ${p.name} x ${qty} = ${rupee(subtotal)}\n`;
+      });
+      summary += `\nTotal: ${rupee(total)}\n\nThank you for shopping!`;
+      alert(summary);
+    }
+
+    document.getElementById('clear-cart').addEventListener('click', clearCart);
+    document.getElementById('checkout').addEventListener('click', checkout);
+
+    // Init
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
