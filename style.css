@@ -1,0 +1,97 @@
+/* Reset thoda sa */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Header */
+header {
+  background: #007bff;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 24px;
+}
+
+/* Products */
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.product {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  width: 220px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.product h3 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.product button {
+  background: #28a745;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.product button:hover {
+  background: #218838;
+}
+
+/* Cart */
+#cart {
+  background: white;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#cart h2 {
+  margin-bottom: 10px;
+}
+
+#cart ul {
+  list-style: none;
+  padding: 0;
+}
+
+#cart li {
+  margin-bottom: 10px;
+}
+
+.cart-buttons {
+  margin-top: 15px;
+}
+
+.cart-buttons button {
+  background: #dc3545;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.cart-buttons button:nth-child(2) {
+  background: #007bff;
+}
+
+.cart-buttons button:hover {
+  opacity: 0.9;
+}
